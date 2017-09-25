@@ -1,24 +1,94 @@
 {
-  "name": "react-native-range-datepicker",
-  "version": "1.7.0",
-  "description": "React native range datepicker (inspired by Airbnb Datepicker)",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "_args": [
+    [
+      {
+        "raw": "react-native-range-datepicker",
+        "scope": null,
+        "escapedName": "react-native-range-datepicker",
+        "name": "react-native-range-datepicker",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "/Users/Aviram/NewProjects/skyflex2017"
+    ]
+  ],
+  "_from": "react-native-range-datepicker@latest",
+  "_id": "react-native-range-datepicker@1.7.0",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/react-native-range-datepicker",
+  "_nodeVersion": "6.9.4",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/react-native-range-datepicker-1.7.0.tgz_1503654010553_0.7131408981513232"
   },
+  "_npmUser": {
+    "name": "hansoncitra",
+    "email": "hansoncitra@gmail.com"
+  },
+  "_npmVersion": "4.1.2",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "react-native-range-datepicker",
+    "scope": null,
+    "escapedName": "react-native-range-datepicker",
+    "name": "react-native-range-datepicker",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "http://registry.npmjs.org/react-native-range-datepicker/-/react-native-range-datepicker-1.7.0.tgz",
+  "_shasum": "a1e6999acd835924176829b2f3944f4d065282ef",
+  "_shrinkwrap": null,
+  "_spec": "react-native-range-datepicker",
+  "_where": "/Users/Aviram/NewProjects/skyflex2017",
+  "author": {
+    "name": "Hanson Citra",
+    "email": "hansoncitra@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/apaajabolehd/react-native-range-datepicker/issues"
+  },
+  "dependencies": {
+    "moment": "^2.17.1"
+  },
+  "description": "React native range datepicker (inspired by Airbnb Datepicker)",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "shasum": "a1e6999acd835924176829b2f3944f4d065282ef",
+    "tarball": "https://registry.npmjs.org/react-native-range-datepicker/-/react-native-range-datepicker-1.7.0.tgz"
+  },
+  "gitHead": "dc1a7a57450ceb5aee576f4e6ba8df9afe35be12",
+  "homepage": "https://github.com/apaajabolehd/react-native-range-datepicker#readme",
   "keywords": [
     "react-native",
     "datepicker",
     "range",
     "javascript"
   ],
+  "license": "ISC",
+  "main": "index.js",
+  "maintainers": [
+    {
+      "name": "hansoncitra",
+      "email": "hansoncitra@gmail.com"
+    }
+  ],
+  "name": "react-native-range-datepicker",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/apaajabolehd/react-native-range-datepicker.git"
   },
-  "author": "Hanson Citra <hansoncitra@gmail.com>",
-  "license": "ISC",
-  "dependencies": {
-    "moment": "^2.17.1"
-  }
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.7.0"
 }

@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Month from './Month';
 // import styles from './styles';
-import moment from 'moment';
+import moment from 'moment-with-locales-es6';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -56,6 +56,10 @@ export default class RangeDatepicker extends Component {
 		untilDate: '',
 		minDate: '',
 		maxDate: '',
+		style: {},
+		resetButtonText: 'Reset',
+		resetButtonStyle: {},
+		dayHeadingTextStyle: {},
 		infoText: '',
 		infoStyle: {color: '#fff', fontSize: 13},
 		infoContainerStyle: {marginRight: 20, paddingHorizontal: 20, paddingVertical: 5, backgroundColor: 'green', borderRadius: 20, alignSelf: 'flex-end'}
@@ -90,10 +94,20 @@ export default class RangeDatepicker extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		this.setState({availableDates: nextProps.availableDates});
+		console.log(nextProps.untilDate)
+		this.setState({
+			availableDates: nextProps.availableDates,
+			untilDate: nextProps.single ? null : moment(nextProps.untilDate),
+			startDate: moment(nextProps.startDate)
+		});
 	}
 
 	onSelectDate(date){
+		if(this.props.single) {
+			this.setState({startDate: date, untilDate: null});
+			return this.props.onSelect(date);
+		}
+
 		let startDate = null;
 		let untilDate = null;
 		const { availableDates } = this.state;
@@ -171,7 +185,7 @@ export default class RangeDatepicker extends Component {
 	}
 
 	handleRenderRow(month) {
-		const { selectedBackgroundColor, selectedTextColor, todayColor, ignoreMinDate, minDate, maxDate } = this.props;
+		const { selectedBackgroundColor, selectedBetweenBackgroundColor, selectedBetweenTextColor, selectedBetweenBorderColor, selectedTextColor, todayColor, ignoreMinDate, minDate, maxDate, textColor } = this.props;
 		let { availableDates, startDate, untilDate } = this.state;
 
 
@@ -185,6 +199,7 @@ export default class RangeDatepicker extends Component {
 
 		return (
 			<Month
+				{...this.props}
 				onSelectDate={this.onSelectDate}
 				startDate={startDate}
 				untilDate={untilDate}
@@ -192,82 +207,101 @@ export default class RangeDatepicker extends Component {
 				minDate={minDate ? moment(minDate, 'YYYYMMDD') : minDate}
 				maxDate={maxDate ? moment(maxDate, 'YYYYMMDD') : maxDate}
 				ignoreMinDate={ignoreMinDate}
-				dayProps={{selectedBackgroundColor, selectedTextColor, todayColor}}
+				dayProps={{textColor, selectedBackgroundColor, selectedBetweenBackgroundColor, selectedBetweenBorderColor, selectedTextColor, selectedBetweenTextColor, todayColor}}
 				month={month} />
 		)
 	}
 
 	render(){
 		const monthStack = this.ds.cloneWithRows(this.getMonthStack());
-			return (
-				<View style={{backgroundColor: '#fff', zIndex: 1000, alignSelf: 'center'}}>
-					{
-						this.props.showClose || this.props.showReset ?
-							(<View style={{ flexDirection: 'row', justifyContent: "space-between", padding: 20, paddingBottom: 10}}>
-								{
-									this.props.showClose && <Text style={{fontSize: 20}} onPress={this.props.onClose}>Close</Text>
-								}
-								{
-									this.props.showReset && <Text style={{fontSize: 20}} onPress={this.onReset}>Reset</Text>
-								}
-							</View>)
-							:
-							null
-					}
-					<View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 20, paddingBottom: 5, alignItems: 'center'}}>
-						<View style={{flex: 1}}>
-							<Text style={{fontSize: 34, color: '#666'}}>
-								{ this.state.startDate ? moment(this.state.startDate).format("MMM DD YYYY") : this.props.placeHolderStart}
-							</Text>
-						</View>
+		const {
+			style,
+			locale,
+			selectedTitleStyle,
+			resetButtonText,
+			resetButtonStyle,
+			dayHeadingTextStyle,
+			selectedBetweenBorderColor,
+			single
+		} = this.props;
+		return (
+			<View style={[{backgroundColor: '#fff', zIndex: 1000, alignSelf: 'center'}, style]}>
+				{
+					this.props.showClose || this.props.showReset ?
+						(<View style={{ flexDirection: 'row-reverse', justifyContent: "space-between", paddingHorizontal: 20, paddingBottom: 8}}>
+							{
+								this.props.showClose && <Text style={{fontSize: 20}} onPress={this.props.onClose}>Close</Text>
+							}
+							{
+								this.props.showReset && <Text style={[{fontSize: 20}, resetButtonStyle]} onPress={this.onReset}>{resetButtonText}</Text>
+							}
+						</View>)
+						:
+						null
+				}
+				<View style={{ flexDirection: 'row', justifyContent: "space-between", paddingHorizontal: 20, paddingBottom: 20, alignItems: 'center', height: 80}}>
+					<View style={{flex: 1, marginTop: 4}}>
+						<Text style={[{fontSize: 34, color: '#666'}, selectedTitleStyle]}>
+							{ this.state.startDate ? moment(this.state.startDate).locale(locale).format("dddd") : this.props.placeHolderStart}
+						</Text>
+						{this.state.startDate && <Text style={[{fontSize: 34, color: '#666', marginTop: -6}, selectedTitleStyle]}>
+							{moment(this.state.startDate).locale(locale).format("MMM DD")}
+						</Text>}
+					</View>
 
-						<View style={{}}>
-							<Text style={{fontSize: 80}}>
-								/
-							</Text>
-						</View>
+					{!single && <View style={{}}>
+						<Text style={{fontSize: 60}}>
+							/
+						</Text>
+					</View>}
 
-						<View style={{flex: 1}}>
-							<Text style={{fontSize: 34, color: '#666', textAlign: 'right'}}>
-								{ this.state.untilDate ? moment(this.state.untilDate).format("MMM DD YYYY") : this.props.placeHolderUntil}
-							</Text>
-						</View>
-					</View>
-					{
-						this.props.infoText != "" && 
-						<View style={this.props.infoContainerStyle}>
-							<Text style={this.props.infoStyle}>{this.props.infoText}</Text>
-						</View>
-					}
-					<View style={styles.dayHeader}>
-						{
-							this.props.dayHeadings.map((day, i) => {
-								return (<Text style={{width: DEVICE_WIDTH / 7, textAlign: 'center'}} key={i}>{day}</Text>)
-							})
-						}
-					</View>
-					<ListView
-			            dataSource={monthStack}
-			            renderRow={this.handleRenderRow}
-			            initialListSize={1}
-			            showsVerticalScrollIndicator={false} />
-					<View style={[styles.buttonWrapper, this.props.buttonContainerStyle]}>
-						<Button
-							title="Select Date" 
-							onPress={this.handleConfirmDate}
-							color={this.props.buttonColor} />
-					</View>
+					{!single && <View style={{flex: 1, marginTop: 4}}>
+						<Text style={[{fontSize: 34, color: '#666', textAlign: 'right'}, selectedTitleStyle]}>
+							{ this.state.untilDate ? moment(this.state.untilDate).locale(locale).format("dddd") : this.props.placeHolderUntil}
+						</Text>
+						{this.state.untilDate && <Text style={[{fontSize: 34, color: '#666', textAlign: 'right', marginTop: -6}, selectedTitleStyle]}>
+							{moment(this.state.untilDate).locale(locale).format("MMM DD")}
+						</Text>}
+					</View>}
 				</View>
-			)
+				{
+					this.props.infoText != "" &&
+					<View style={this.props.infoContainerStyle}>
+						<Text style={this.props.infoStyle}>{this.props.infoText}</Text>
+					</View>
+				}
+				<View style={styles.dayHeader}>
+					{
+						this.props.dayHeadings.map((day, i) => {
+							let dayDate = moment().startOf('week').add(i, 'day');
+
+							return (<Text style={[{width: DEVICE_WIDTH / 7, textAlign: 'center'}, dayHeadingTextStyle]} key={i}>{dayDate.locale(locale).format('dd')}</Text>)
+						})
+					}
+				</View>
+				<ListView
+					dataSource={monthStack}
+					renderRow={this.handleRenderRow}
+					initialListSize={1}
+					showsVerticalScrollIndicator={false} />
+				<View style={[styles.buttonWrapper, this.props.buttonContainerStyle]}>
+					<Button
+						title="Select Date"
+						onPress={this.handleConfirmDate}
+						color={this.props.buttonColor} />
+				</View>
+			</View>
+		)
 	}
 }
 
 const styles = StyleSheet.create({
 	dayHeader : { 
-		flexDirection: 'row', 
-		borderBottomWidth: 1, 
-		paddingBottom: 10,
-		paddingTop: 10,
+		flexDirection: 'row',
+		paddingBottom: 8,
+		borderBottomWidth: StyleSheet.hairlineWidth,
+		borderBottomColor: '#fff',
+		marginBottom: 12
 	},
 	buttonWrapper : {
 		paddingVertical: 10, 

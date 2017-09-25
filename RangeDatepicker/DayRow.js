@@ -4,7 +4,7 @@ import {
 	View
 } from 'react-native';
 import Day from './Day';
-import moment from 'moment';
+import moment from 'moment-with-locales-es6';
 
 export default class DayRow extends React.Component {
 	constructor(props) {
@@ -24,7 +24,7 @@ export default class DayRow extends React.Component {
 				{
 					this.props.days.map((day, i) => {
 						return (
-							<Day key={i} dayProps={this.props.dayProps} onSelectDate={this.props.onSelectDate} day={day}/>
+							<Day {...this.props} key={i} dayProps={this.props.dayProps} onSelectDate={this.props.onSelectDate} day={day}/>
 						)
 					})
 				}

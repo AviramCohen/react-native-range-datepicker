@@ -7,7 +7,7 @@ import {
 	Text
 } from 'react-native';
 import DayRow from './DayRow'
-import moment from 'moment'
+import moment from 'moment-with-locales-es6'
 
 export default class Month extends React.Component {
 	constructor(props) {
@@ -116,16 +116,16 @@ export default class Month extends React.Component {
 	}
 
 	render() {
-		const { month, dayProps } = this.props;
+		const { month, dayProps, locale, monthTitleStyle } = this.props;
 		const dayStack = this.getDayStack(moment(month, 'YYYYMM'));
 		return (
 			<View>
-				<Text style={{fontSize: 20, padding: 20}}>{moment(month, 'YYYYMM').format("MMMM YYYY")}</Text>
+				<Text style={[{fontSize: 20, paddingHorizontal: 10}, monthTitleStyle]}>{moment(month, 'YYYYMM').locale(locale).format("MMMM")}</Text>
 				<View>
 					{
 						dayStack.map((days, i) => {
 							return (
-								<DayRow days={days} dayProps={dayProps} key={i} onSelectDate={this.props.onSelectDate}/>
+								<DayRow {...this.props} days={days} dayProps={dayProps} key={i} onSelectDate={this.props.onSelectDate}/>
 							)
 						})
 					}

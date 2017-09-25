@@ -5,9 +5,10 @@ import {
 	StyleSheet,
 	Text,
 	TouchableWithoutFeedback,
+	TouchableOpacity,
 	Dimensions
 } from 'react-native';
-import moment from 'moment';
+import moment from 'moment-with-locales-es6';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -24,26 +25,30 @@ export default class Day extends React.Component {
 	}
 
 	render() {
-		let {day, dayProps} = this.props;
+		let {day, dayProps, locale} = this.props;
 		let dayStyle = {backgroundColor : 'transparent', position: 'relative'};
-		let textDayStyle = {color: 'black'};
+		let textDayStyle = {color: dayProps.textColor || 'black'};
+		let touchStyle = {width: Math.floor(DEVICE_WIDTH / 7), height: Math.floor((DEVICE_WIDTH / 7)-10), justifyContent: 'center', alignItems: 'center'}
+
+		const margin = Math.floor((DEVICE_WIDTH / 7)/3.7);
+		const size = Math.floor((DEVICE_WIDTH / 7)-margin);
 
 		switch(day.type){
 			case "single" : 
-				dayStyle = {backgroundColor : dayProps.selectedBackgroundColor, borderRadius: Math.floor(DEVICE_WIDTH / 7) }
-				textDayStyle = {color: dayProps.selectedTextColor};
+				dayStyle = {backgroundColor: dayProps.selectedBetweenBackgroundColor, borderColor: dayProps.selectedBetweenBorderColor, borderWidth: 1, borderRadius: size }
+				textDayStyle = {color: dayProps.selectedBetweenTextColor};
 				break;
 			case "first" :
-				dayStyle = {backgroundColor : dayProps.selectedBackgroundColor, borderBottomLeftRadius: Math.floor(DEVICE_WIDTH / 7), borderTopLeftRadius: Math.floor(DEVICE_WIDTH / 7) }
-				textDayStyle = {color: dayProps.selectedTextColor};
+				dayStyle = {backgroundColor: dayProps.selectedBetweenBackgroundColor, borderColor : dayProps.selectedBetweenBorderColor, borderWidth: 1, borderRadius: size  }
+				textDayStyle = {color: dayProps.selectedBetweenTextColor};
 				break;
 			case "last" :
-				dayStyle = {backgroundColor : dayProps.selectedBackgroundColor, borderBottomRightRadius: Math.floor(DEVICE_WIDTH / 7), borderTopRightRadius: Math.floor(DEVICE_WIDTH / 7) }
-				textDayStyle = {color: dayProps.selectedTextColor};
+				dayStyle = {backgroundColor: dayProps.selectedBetweenBackgroundColor, borderColor : dayProps.selectedBetweenBorderColor, borderWidth:1, borderRadius: size }
+				textDayStyle = {color: dayProps.selectedBetweenTextColor};
 				break;
 			case "between" :
-				dayStyle = {backgroundColor : dayProps.selectedBackgroundColor}
-				textDayStyle = {color: dayProps.selectedTextColor};
+				dayStyle = {backgroundColor: dayProps.selectedBetweenBackgroundColor, borderColor : dayProps.selectedBetweenBorderColor, borderWidth: 1, borderRadius: size }
+				textDayStyle = {color: dayProps.selectedBetweenTextColor};
 				break;
 			case "disabled" :
 			case "blockout" :
@@ -54,41 +59,37 @@ export default class Day extends React.Component {
 		if(day.date){
 			if(day.type == 'disabled')
 				return (
-					<TouchableWithoutFeedback activeOpacity={1} style={dayStyle}>
-						<View style={{...dayStyle, height: Math.floor(DEVICE_WIDTH / 7), justifyContent: 'center'}}>
-							<Text style={{...textDayStyle, textAlign: "center", width: Math.floor(DEVICE_WIDTH / 7), backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 26)}}>{moment(day.date, 'YYYYMMDD').date()}</Text>
-							{day.date == moment().format("YYYYMMDD") ? (<View style={{position: 'absolute', top:0, bottom:0, left:0, right: 0, justifyContent: 'center', backgroundColor: 'transparent'}}><Text style={{fontSize: Math.floor(DEVICE_WIDTH / 17), fontWeight: 'bold', color: '#ccc', textAlign: 'center'}}>__</Text></View>) : null}
+					<TouchableOpacity activeOpacity={1} style={touchStyle}>
+						<View style={{...dayStyle, height: size, justifyContent: 'center', opacity: 0.4}}>
+							<Text style={{...textDayStyle, textAlign: "center", width: size, backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 24)}}>{moment(day.date, 'YYYYMMDD').locale(locale).date()}</Text>
 						</View>
-					</TouchableWithoutFeedback>
+					</TouchableOpacity>
 				);
 			else if(day.type == 'blockout') {
-				const strikeTop = Math.floor(DEVICE_WIDTH / -22);
 				return (
-					<TouchableWithoutFeedback activeOpacity={1} style={dayStyle}>
-						<View style={{...dayStyle, height: Math.floor(DEVICE_WIDTH / 7), justifyContent: 'center'}}>
-							<Text style={{...textDayStyle, textAlign: "center", width: Math.floor(DEVICE_WIDTH / 7), backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 26)}}>{moment(day.date, 'YYYYMMDD').date()}</Text>
-							<View style={{position: 'absolute', top: strikeTop, bottom:0, left:0, right: 0, justifyContent: 'center', backgroundColor: 'transparent'}}><Text style={{fontSize: Math.floor(DEVICE_WIDTH / 17), color: '#ccc', textAlign: 'center'}}>__</Text></View>
+					<TouchableOpacity style={touchStyle}>
+						<View style={{...dayStyle, height: size, justifyContent: 'center'}}>
+							<Text style={{...textDayStyle, textAlign: "center", width: size, backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 24)}}>{moment(day.date, 'YYYYMMDD').locale(locale).date()}</Text>
 						</View>
-					</TouchableWithoutFeedback>
+					</TouchableOpacity>
 				);
 			}
 			else
 				return (
-					<TouchableWithoutFeedback activeOpacity={1} style={dayStyle} onPress={() => this.props.onSelectDate(moment(day.date, 'YYYYMMDD'))}>
-						<View style={{...dayStyle, height: Math.floor(DEVICE_WIDTH / 7), justifyContent: 'center'}}>
-							<Text style={{...textDayStyle, textAlign: "center", width: Math.floor(DEVICE_WIDTH / 7), backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 26)}}>{moment(day.date, 'YYYYMMDD').date()}</Text>
-							{day.date == moment().format("YYYYMMDD") ? (<View style={{position: 'absolute', top:0, bottom:0, left:0, right: 0, justifyContent: 'center', backgroundColor: 'transparent'}}><Text style={{fontSize: Math.floor(DEVICE_WIDTH / 17), fontWeight: 'bold', color: dayProps.selectedBackgroundColor, textAlign: 'center'}}>__</Text></View>) : null}
+					<TouchableOpacity style={touchStyle} onPress={() => this.props.onSelectDate(moment(day.date, 'YYYYMMDD'))}>
+						<View style={{...dayStyle, height: size, width: size, justifyContent: 'center'}}>
+							<Text style={{...textDayStyle, textAlign: "center", backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 24)}}>{moment(day.date, 'YYYYMMDD').locale(locale).date()}</Text>
 						</View>
-					</TouchableWithoutFeedback>
+					</TouchableOpacity>
 				);
 		}
 		else
 			return (
-				<TouchableWithoutFeedback activeOpacity={1} style={dayStyle}>
-					<View style={{...dayStyle, height: Math.floor(DEVICE_WIDTH / 7), justifyContent: 'center'}}>
-						<Text style={{ ...textDayStyle, textAlign: "center", width: Math.floor(DEVICE_WIDTH / 7), backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 26)}}>{null}</Text>
+				<TouchableOpacity style={{...touchStyle, opacity: 0}}>
+					<View style={{...dayStyle, height: size, width: size, justifyContent: 'center', opacity: 0}}>
+						<Text style={{ ...textDayStyle, textAlign: "center", width: size, backgroundColor: 'transparent', fontSize: Math.floor(DEVICE_WIDTH / 24)}}>{null}</Text>
 					</View>
-				</TouchableWithoutFeedback>
+				</TouchableOpacity>
 			);
 	}
 }
